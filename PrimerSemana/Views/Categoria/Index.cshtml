@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Categorías";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        @foreach (var categoria in Model)
+        {
+            <!-- IMPORTANTE: El 'col-md-4' es lo que mantiene la cuadrícula -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm custom-card">
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold mb-3">@categoria.Nombre</h5>
+                        <p class="card-text mb-4">@categoria.Descripcion</p>
+                        <a href="#" class="text-decoration-none fw-bold">Ver libros →</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

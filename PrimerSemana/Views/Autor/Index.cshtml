@@ -1,0 +1,46 @@
+﻿@model IEnumerable<PrimerSemana.Models.Autor>
+
+@{
+    ViewData["Title"] = "Autores";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Bucle que recorre la lista de autores -->
+        @foreach (var autor in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm custom-card">
+                    <div class="card-body p-4 text-center">
+                        <!-- Imagen del autor -->
+                        <img src="~/images/@autor.FotoUrl"
+                             alt="@autor.Nombre"
+                             class="img-fluid rounded-circle mb-4 shadow-sm"
+                             style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #334155;">
+
+                        <h5 class="card-title fw-bold mb-3">@autor.Nombre</h5>
+
+                        <p class="card-text mb-1 text-start">
+                            <i class="bi bi-globe me-2"></i><strong>Nacionalidad:</strong> @autor.Nacionalidad
+                        </p>
+
+                        <!-- Procesa la fecha de nacimiento para que se muestre en el formato deseado -->
+                        <p class="card-text mb-4 text-start">
+                            <i class="bi bi-calendar-event me-2"></i><strong>Nacimiento:</strong> @autor.FechaNacimiento.ToString("dd/MM/yyyy")
+                        </p>
+
+                        <!-- El estado del autor se muestra como texto y se subraya con las etiquetas de Razor -->
+                        <p class="card-text mb-4 text-start">
+                            <i class="bi bi-info-circle me-2"></i><strong>Estado:</strong>
+                            <span class="badge @(autor.Estado == PrimerSemana.Models.EstadoAutor.Activo ? "bg-success" : "bg-danger")">
+                                @autor.Estado.ToString()
+                            </span>
+                        </p>
+
+                        <a href="#" class="text-decoration-none fw-bold d-block text-start">Ver libros del autor →</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

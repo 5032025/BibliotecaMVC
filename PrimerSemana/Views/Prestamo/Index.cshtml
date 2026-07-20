@@ -1,0 +1,46 @@
+﻿@model IEnumerable<PrimerSemana.Models.Prestamo>
+
+<div class="container mt-5">
+    <h2 class="text-white fw-bold mb-3">Préstamos</h2>
+    
+
+   
+    <div class="card bg-dark border-secondary shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-dark table-hover mb-0">
+                <thead>
+                    <tr class="text-muted small">
+                        <th class="p-3">LIBRO</th>
+                        <th class="p-3">USUARIO</th>
+                        <th class="p-3">VENCE</th>
+                        <th class="p-3 text-end">ESTADO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td class="p-3">
+                                <div class="fw-bold text-white">@p.Libro</div>
+                                <div class="text-muted small">por @p.Autor</div>
+                            </td>
+                            <td class="p-3 text-white">@p.Usuario</td>
+                            <td class="p-3 text-white">@p.FechaVencimiento.ToString("d MMM yyyy")</td>
+                            <td class="p-3 text-end">
+                                @{
+                                    string badgeClass = p.Estado switch
+                                    {
+                                        PrimerSemana.Models.EstadoPrestamo.Vencido => "bg-danger",
+                                        PrimerSemana.Models.EstadoPrestamo.Activo => "bg-primary",
+                                        _ => "bg-secondary" // Devuelto
+                                    };
+                                }
+                                <span class="badge @badgeClass px-3 py-2">@p.Estado</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

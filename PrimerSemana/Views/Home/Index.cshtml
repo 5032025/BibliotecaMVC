@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="container mt-5">
+
+    <!-- 1. Sección Hero (BlibioCore) -->
+    <div class="card p-4 mb-5 shadow-lg border-0" style="background-color: #1e293b;">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center">
+                <img src="~/images/libros.jpg" alt="Libros" class="img-fluid rounded-3">
+            </div>
+            <div class="col-md-9 text-white">
+                <h1 class="display-3 fw-bold">BlibioCore</h1>
+                <p class="lead">Gestiona tu catálogo de forma inteligente, rápida y eficiente con nuestro sistema centralizado.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Barra de búsqueda -->
+    <div class="mb-5">
+        <form class="d-flex justify-content-center">
+            <input class="form-control w-75 bg-dark text-white border-secondary shadow-sm" type="search" placeholder="Buscar libros, autores...">
+            <button class="btn btn-warning ms-2 fw-bold" type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <!-- 3. Grid de libros -->
+    <div class="row mb-5">
+        @foreach (var libro in Model)
+        {
+            <div class="col-md-2 mb-4">
+                <div class="card h-100 bg-dark text-white border-secondary">
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold text-white">@libro.Titulo</h6>
+                        <p class="card-text text-white-50 small">@libro.Autor</p>
+                        <p class="card-text text-white-50 small">@libro.Categoria</p>
+                        <p class="card-text text-warning fm-bold">$@libro.Precio.ToString("F2")</p>
+                        @if (libro.Disponible)
+                        {
+                            <span class="badge bg-success">Disponible</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">No disponible</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="my-5" style="font-size: 150px;">&nbsp;</div>
+    <!-- 4. Sección Acerca de (Con su propio cuadro) -->
+    
+    <div id="acerca-de" class="card p-5 text-white border-0 shadow-lg mt-5 mb-5" style="background-color: #1e293b; border-radius: 20px;">
+        <div class="text-center">
+            <h2 class="fw-bold text-white">Acerca de BlibioCore</h2>
+            <p class="mt-3 text-white">
+                BlibioCore es un sistema de gestión bibliotecaria centralizado, diseñado para optimizar el control de catálogos, autores y préstamos con una interfaz moderna y eficiente.
+            </p>
+            <hr class="border-secondary my-4">
+            <h5 class="text-white">Versión 1.0.0</h5>
+            <p class="text-white-50">Desarrollado para la gestión inteligente de recursos literarios.</p>
+        </div>
+    </div>
+</div>
