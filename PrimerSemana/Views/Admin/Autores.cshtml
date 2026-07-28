@@ -1,0 +1,141 @@
+﻿@model IEnumerable<PrimerSemana.Models.Autor>
+
+@{
+    ViewData["Title"] = "Gestión de Autores";
+}
+
+<div class="container mt-4 text-white">
+    <h2 class="text-warning mb-4">Gestión de Autores</h2>
+
+    <!-- Formulario Dinámico (Sirve tanto para Registrar como para Modificar aquí mismo) -->
+    <div class="card p-4 mb-5" style="background-color: #1c2541; border: none;">
+        <h4 id="form-titulo" class="mb-3 text-white">Registrar Nuevo Autor</h4>
+        <form id="autor-form" asp-action="CrearAutor" method="post" class="row g-3">
+            <!-- Campo oculto para manejar el ID cuando estamos editando -->
+            <input type="hidden" id="AutorId" name="Id" value="0" />
+
+            <div class="col-md-4">
+                <label class="form-label text-white-50">Nombre del Autor</label>
+                <input type="text" id="Nombre" name="Nombre" class="form-control bg-dark text-white border-secondary" required />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-white-50">Nacionalidad</label>
+                <input type="text" id="Nacionalidad" name="Nacionalidad" class="form-control bg-dark text-white border-secondary" required />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-white-50">Fecha de Nacimiento</label>
+                <input type="date" id="FechaNacimiento" name="FechaNacimiento" class="form-control bg-dark text-white border-secondary" required />
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" id="btn-submit" class="btn btn-warning w-100 fw-bold">Guardar</button>
+                <button type="button" id="btn-cancelar" class="btn btn-outline-secondary w-100 fw-bold d-none" onclick="cancelarEdicion()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabla de Autores -->
+    <div class="card p-4" style="background-color: #1c2541; border: none;">
+        <h4 class="mb-3 text-white">Listado de Autores</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Nacionalidad</th>
+                        <th>Nacimiento</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var autor in Model)
+                    {
+                        <tr>
+                            <td>@autor.Id</td>
+                            <td>@autor.Nombre</td>
+                            <td>@autor.Nacionalidad</td>
+                            <td>@autor.FechaNacimiento.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                @if (autor.Estado == EstadoAutor.Activo)
+                                {
+                                    <span class="badge bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactivo</span>
+                                }
+                            </td>
+                            <td>
+                                <!-- Botón Modificar que carga los datos aquí mismo en el formulario superior -->
+                                <button type="button" class="btn btn-sm btn-outline-warning me-1"
+                                        onclick="cargarParaEditar('@autor.Id', '@autor.Nombre', '@autor.Nacionalidad', '@autor.FechaNacimiento.ToString("yyyy-MM-dd")')">
+                                    Modificar
+                                </button>
+
+                                <!-- Botón Cambiar Estado -->
+                                <form asp-action="CambiarEstadoAutor" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@autor.Id" />
+                                    <button type="submit" class="btn btn-sm @(autor.Estado == EstadoAutor.Activo ? "btn-outline-danger" : "btn-outline-success")">
+                                        @(autor.Estado == EstadoAutor.Activo ? "Desactivar" : "Activar")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Index" class="btn btn-secondary">Volver al Panel</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function cargarParaEditar(id, nombre, nacionalidad, fechaNacimiento) {
+            // Cambiar la acción del formulario al método EditarAutor en lugar de CrearAutor
+            const form = document.getElementById('autor-form');
+            form.action = '@Url.Action("EditarAutor", "Admin")';
+
+            // Rellenar los campos con los datos del autor seleccionado asegurando el ID
+            document.getElementById('AutorId').value = id;
+            document.getElementById('Nombre').value = nombre;
+            document.getElementById('Nacionalidad').value = nacionalidad;
+
+            // Limpiamos y normalizamos la fecha al formato YYYY-MM-DD que exige el input date del navegador
+            let fechaLimpia = fechaNacimiento.split('T')[0]; // Por si trae hora
+            document.getElementById('FechaNacimiento').value = fechaLimpia;
+
+            // Cambiar textos y mostrar botón de cancelar
+            document.getElementById('form-titulo').innerText = "Modificar Autor (ID: " + id + ")";
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.innerText = "Actualizar";
+            btnSubmit.classList.remove('btn-warning');
+            btnSubmit.classList.add('btn-success');
+
+            document.getElementById('btn-cancelar').classList.remove('d-none');
+
+            // Desplazar la página suavemente hacia arriba para ver el formulario
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicion() {
+            const form = document.getElementById('autor-form');
+            form.action = '@Url.Action("CrearAutor", "Admin")';
+
+            document.getElementById('AutorId').value = "0";
+            form.reset();
+
+            document.getElementById('form-titulo').innerText = "Registrar Nuevo Autor";
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.innerText = "Guardar";
+            btnSubmit.classList.remove('btn-success');
+            btnSubmit.classList.add('btn-warning');
+
+            document.getElementById('btn-cancelar').classList.add('d-none');
+        }
+    </script>
+}

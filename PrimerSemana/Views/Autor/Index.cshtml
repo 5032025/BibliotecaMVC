@@ -10,7 +10,8 @@
         @foreach (var autor in Model)
         {
             <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm custom-card">
+                <!-- Si el autor está inactivo, le bajamos la opacidad y cambiamos ligeramente el borde -->
+                <div class="card h-100 border-0 shadow-sm custom-card bg-dark text-white @(autor.Estado == PrimerSemana.Models.EstadoAutor.Activo ? "" : "opacity-50 border border-danger")">
                     <div class="card-body p-4 text-center">
                         <!-- Imagen del autor -->
                         <img src="~/images/@autor.FotoUrl"
@@ -29,7 +30,7 @@
                             <i class="bi bi-calendar-event me-2"></i><strong>Nacimiento:</strong> @autor.FechaNacimiento.ToString("dd/MM/yyyy")
                         </p>
 
-                        <!-- El estado del autor se muestra como texto y se subraya con las etiquetas de Razor -->
+                        <!-- El estado del autor se muestra con la etiqueta correspondiente -->
                         <p class="card-text mb-4 text-start">
                             <i class="bi bi-info-circle me-2"></i><strong>Estado:</strong>
                             <span class="badge @(autor.Estado == PrimerSemana.Models.EstadoAutor.Activo ? "bg-success" : "bg-danger")">
@@ -37,7 +38,14 @@
                             </span>
                         </p>
 
-                        <a href="#" class="text-decoration-none fw-bold d-block text-start">Ver libros del autor →</a>
+                        @if (autor.Estado == PrimerSemana.Models.EstadoAutor.Activo)
+                        {
+                            <a href="#" class="text-decoration-none fw-bold d-block text-start text-warning">Ver libros del autor →</a>
+                        }
+                        else
+                        {
+                            <span class="text-danger small fw-bold d-block text-start">No disponible temporalmente</span>
+                        }
                     </div>
                 </div>
             </div>

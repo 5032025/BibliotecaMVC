@@ -1,0 +1,52 @@
+﻿@model IEnumerable<PrimerSemana.Controllers.UsuarioModelSimulado>
+
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="container mt-4 text-white">
+    <h2 class="text-warning mb-4">Gestión de Usuarios</h2>
+
+    <!-- Tabla de Usuarios -->
+    <div class="card p-4" style="background-color: #1c2541; border: none;">
+        <h4 class="mb-3 text-white">Listado de Usuarios Registrados</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo Electrónico</th>
+                        <th>Ubicación</th>
+                        <th>Edad</th>
+                        <th>Rol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var usuario in Model)
+                    {
+                        <tr>
+                            <td>@usuario.Nombre</td>
+                            <td>@usuario.Email</td>
+                            <td>@usuario.Ubicacion</td>
+                            <td>@usuario.Edad</td>
+                            <td>
+                                @if (usuario.Rol == "Admin")
+                                {
+                                    <span class="badge bg-warning text-dark">Admin</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info text-dark">Usuario</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Index" class="btn btn-secondary">Volver al Panel</a>
+    </div>
+</div>

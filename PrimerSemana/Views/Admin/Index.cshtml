@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Panel de Administración";
+}
+
+<div class="container mt-4 text-white">
+    <div class="p-5 mb-4 rounded-3" style="background-color: #1c2541;">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold text-warning">Panel de Administrador</h1>
+            <p class="col-md-8 fs-4 text-light">Bienvenido al núcleo de control de BlibioCore. Desde aquí puedes supervisar el sistema y gestionar las entidades principales.</p>
+            <hr class="my-4 border-secondary">
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="p-3 bg-dark rounded border border-secondary">
+                        <h5 class="text-warning">Gestión de Libros</h5>
+                        <p class="small text-muted">Añade, edita o cambia la disponibilidad de los libros.</p>
+                        <a asp-controller="Admin" asp-action="Libros" class="btn btn-sm btn-outline-warning">Ir a Libros</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-dark rounded border border-secondary">
+                        <h5 class="text-warning">Gestión de Autores</h5>
+                        <p class="small text-muted">Registra autores o cambia su estado de activación.</p>
+                        <a asp-controller="Admin" asp-action="Autores" class="btn btn-sm btn-outline-warning">Ir a Autores</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-dark rounded border border-secondary">
+                        <h5 class="text-warning">Sesión</h5>
+                        <p class="small text-muted">Cierra tu sesión de administrador de forma segura.</p>
+                        <a asp-controller="Usuario" asp-action="Logout" class="btn btn-sm btn-outline-danger">Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

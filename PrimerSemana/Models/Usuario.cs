@@ -6,5 +6,9 @@
         public string Email { get; set; }
         public string Ubicacion { get; set; }
         public int Edad { get; set; }
+
+        public string Rol { get; set; } 
+
+        public string Password { get; set; }
     }
 }
