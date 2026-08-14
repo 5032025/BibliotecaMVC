@@ -1,3 +1,6 @@
+/* ==========================================
+   1. VARIABLES Y CONFIGURACIÓN BASE
+   ========================================== */
 :root {
     --bg-color: #0f172a;
     --card-bg: #1e293b;
@@ -10,8 +13,8 @@ body {
     background-color: var(--bg-color);
     color: var(--text-primary);
     font-family: 'Inter', -apple-system, sans-serif;
+    overflow-x: hidden;
 }
-
 
 .custom-card {
     background-color: var(--card-bg) !important;
@@ -44,33 +47,243 @@ body {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-
-
 .img-fluid {
     max-width: 250px;
     height: auto;
     border-radius: 0.75rem !important;
 }
 
-
 h1.display-5 {
-    font-size: 2.5rem; 
+    font-size: 2.5rem;
 }
 
 p.h5 {
-    font-size: 1.1rem; 
+    font-size: 1.1rem;
 }
 
 .image-container {
     width: 100%;
-    height: 300px; /* Ajusta este valor según prefieras */
+    height: 300px;
     overflow: hidden;
-    border-radius: 1rem; /* Bordes redondeados más suaves */
+    border-radius: 1rem;
 }
 
     .image-container img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Esto centra y recorta la imagen proporcionalmente */
+        object-fit: cover;
         object-position: center;
+    }
+
+
+/* ==========================================
+   2. SECCIÓN HERO (INICIO) - ESTILOS BASE
+   ========================================== */
+.hero-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-figure {
+    width: 100%;
+    max-width: 220px;
+    margin: 0 auto;
+}
+
+.hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    object-fit: cover;
+}
+
+.hero-content {
+    width: 100%;
+}
+
+
+/* ==========================================
+   3. SECCIÓN "ACERCA DE" - ESTILOS BASE (Móvil / < 1000px)
+   ========================================== */
+.about-container {
+    background-color: var(--card-bg);
+    border-radius: 20px;
+}
+
+.about-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Sub-contenedor para imagen y título a la misma altura */
+.about-header-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.about-image-wrapper {
+    flex: 0 0 130px;
+    max-width: 130px;
+    margin: 0;
+}
+
+.about-image {
+    width: 100%;
+    height: auto;
+    max-height: 130px;
+    object-fit: cover;
+    border-radius: 0.75rem;
+}
+
+.about-title-wrapper {
+    flex: 1;
+}
+
+.about-content-wrapper {
+    width: 100%;
+}
+
+.mission-vision-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.mission-vision-card {
+    background-color: var(--bg-color);
+    border: 1px solid #334155;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    width: 100%;
+}
+
+
+/* ==========================================
+   4. GRID DE LIBROS - ESTILOS BASE (Pantallas grandes)
+   ========================================== */
+.libros-grid-item {
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+}
+
+
+/* ==========================================
+   5. MEDIA QUERIES RESPONSIVAS (Ordenadas de mayor a menor)
+   ========================================== */
+
+/* A. Pantallas menores a 1200px (Libros pasan de 3 en 3) */
+@media (max-width: 1199.98px) {
+    .libros-grid-item {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+/* B. Pantallas grandes de Escritorio (min-width: 1000px) -> "Acerca de" en diseño horizontal completo */
+@media (min-width: 1000px) {
+    .about-grid {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        grid-template-rows: auto auto;
+        gap: 1.5rem 2.5rem;
+        align-items: center;
+    }
+
+    .about-header-top {
+        display: contents;
+    }
+
+    .about-image-wrapper {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        max-width: 100%;
+        flex: unset;
+    }
+
+    .about-image {
+        max-height: 300px;
+    }
+
+    .about-title-wrapper {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .about-content-wrapper {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .mission-vision-grid {
+        flex-direction: row;
+    }
+
+    .mission-vision-card {
+        flex: 1;
+    }
+}
+
+/* C. Pantallas menores a 900px (Libros pasan de 2 en 2) */
+@media (max-width: 899.98px) {
+    .libros-grid-item {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* D. Pantallas pequeñas / Móviles (max-width: 576px) */
+@media (max-width: 576px) {
+    .display-3 {
+        font-size: 2rem !important;
+    }
+
+    .card.p-5 {
+        padding: 1.5rem !important;
+    }
+
+    .libros-grid-item {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .about-header-top {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .about-image-wrapper {
+        max-width: 180px;
+        margin: 0 auto;
+    }
+}
+
+/* ==========================================
+   ANIMACIÓN PARA LAS TARJETAS DE MISIÓN Y VISIÓN
+   ========================================== */
+
+.mission-vision-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+    .mission-vision-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        border-color: var(--accent-gold) !important;
+    }
+
+.mission-vision-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+    .mission-vision-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        border-color: var(--accent-gold) !important;
     }

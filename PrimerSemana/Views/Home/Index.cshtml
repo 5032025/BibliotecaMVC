@@ -2,35 +2,35 @@
     ViewData["Title"] = "Inicio";
 }
 
-<div class="container mt-5">
+<main class="container mt-5">
 
-    <!-- 1. Sección Hero (BlibioCore) -->
-    <div class="card p-4 mb-5 shadow-lg border-0" style="background-color: #1e293b;">
-        <div class="row align-items-center">
-            <div class="col-md-3 text-center">
-                <img src="~/images/libros.jpg" alt="Libros" class="img-fluid rounded-3">
-            </div>
-            <div class="col-md-9 text-white">
-                <h1 class="display-3 fw-bold">BlibioCore</h1>
-                <p class="lead">Gestiona tu catálogo de forma inteligente, rápida y eficiente con nuestro sistema centralizado.</p>
-            </div>
+    <!-- 1. Sección Hero (BlibioCore) Optimizada y Responsiva -->
+    <section class="card p-4 p-md-5 mb-5 shadow-lg border-0" style="background-color: #1e293b;">
+        <div class="hero-container">
+            <figure class="hero-figure m-0">
+                <img src="~/images/libros.jpg" alt="Libros" class="hero-image shadow-sm border border-secondary">
+            </figure>
+            <header class="hero-content text-white">
+                <h1 class="display-3 fw-bold mb-3">BlibioCore</h1>
+                <p class="lead m-0">Gestiona tu catálogo de forma inteligente, rápida y eficiente con nuestro sistema centralizado.</p>
+            </header>
         </div>
-    </div>
+    </section>
 
     <!-- 2. Barra de búsqueda -->
-    <div class="mb-5">
-        <form class="d-flex justify-content-center">
+    <aside class="mb-5">
+        <form class="d-flex justify-content-center" role="search">
             <input class="form-control w-75 bg-dark text-white border-secondary shadow-sm" type="search" placeholder="Buscar libros, autores...">
             <button class="btn btn-warning ms-2 fw-bold" type="submit">Buscar</button>
         </form>
-    </div>
+    </aside>
 
     <!-- 3. Grid de libros -->
-    <!-- 3. Grid de libros -->
-    <div class="row mb-5">
+    <section class="row mb-5">
         @foreach (var libro in Model)
         {
-            <div class="col-md-2 mb-4">
+            <!-- Usamos exclusivamente la clase personalizada para que aplique el comportamiento escalonado (6 -> 3 -> 2 -> 1 columnas) -->
+            <article class="libros-grid-item mb-4">
                 <div class="card h-100 bg-dark text-white border-secondary">
                     <!-- Imagen colocada dentro de la tarjeta -->
                     <img src="@Url.Content(libro.ImagenUrl)"
@@ -58,34 +58,23 @@
                         }
                     </div>
                 </div>
-            </div>
+            </article>
         }
-    </div>
+    </section>
 
     <div class="my-5" style="font-size: 150px;">&nbsp;</div>
-    <!-- 4. Sección Acerca de (Con su propio cuadro) -->
-    
-    <div id="acerca-de" class="card p-5 text-white border-0 shadow-lg mt-5 mb-5" style="background-color: #1e293b; border-radius: 20px;">
-        <div class="text-center">
-            <h2 class="fw-bold text-white">Acerca de BlibioCore</h2>
-            <p class="mt-3 text-white">
-                BlibioCore es un sistema de gestión bibliotecaria centralizado, diseñado para optimizar el control de catálogos, autores y préstamos con una interfaz moderna y eficiente.
-            </p>
-            <hr class="border-secondary my-4">
-            <h5 class="text-white">Versión 1.0.0</h5>
-            <p class="text-white-50">Desarrollado para la gestión inteligente de recursos literarios.</p>
-        </div>
-    </div>
 
+    <!-- 4. Sección Acerca de modularizada mediante Vista Parcial -->
+    @await Html.PartialAsync("_AcercaDe")
 
     <!-- Modal para ampliar la imagen -->
     <div class="modal fade" id="imagenModal" tabindex="-1" aria-labelledby="imagenModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content bg-dark text-white border-secondary">
-                <div class="modal-header border-secondary">
+                <header class="modal-header border-secondary">
                     <h5 class="modal-title" id="imagenModalLabel">Vista previa</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                </header>
                 <div class="modal-body text-center">
                     <img id="imagenAmpliada" src="" class="img-fluid rounded" alt="Imagen ampliada" style="max-height: 80vh;" />
                 </div>
@@ -110,4 +99,5 @@
                 });
         </script>
     }
-</div>
+
+</main>
