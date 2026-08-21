@@ -25,13 +25,13 @@
         </form>
     </aside>
 
-    <!-- 3. Grid de libros -->
-    <section class="row mb-5">
+    <!-- 3. Grid de libros usando Flexbox -->
+    <section class="d-flex flex-wrap justify-content-start gap-4 mb-5">
         @foreach (var libro in Model)
         {
-            <!-- Usamos exclusivamente la clase personalizada para que aplique el comportamiento escalonado (6 -> 3 -> 2 -> 1 columnas) -->
-            <article class="libros-grid-item mb-4">
-                <div class="card h-100 bg-dark text-white border-secondary">
+            <!-- Contenedor individual con flexbox (ancho adaptable para diferentes pantallas) -->
+            <article class="mb-4" style="flex: 1 1 250px; max-width: 300px;">
+                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
                     <!-- Imagen colocada dentro de la tarjeta -->
                     <img src="@Url.Content(libro.ImagenUrl)"
                          class="card-img-top rounded-top"
@@ -62,42 +62,41 @@
         }
     </section>
 
-    <div class="my-5" style="font-size: 150px;">&nbsp;</div>
+<div class="my-5" style="font-size: 150px;">&nbsp;</div>
 
-    <!-- 4. Sección Acerca de modularizada mediante Vista Parcial -->
-    @await Html.PartialAsync("_AcercaDe")
+<!-- 4. Sección Acerca de modularizada mediante Vista Parcial -->
+@await Html.PartialAsync("_AcercaDe")
 
-    <!-- Modal para ampliar la imagen -->
-    <div class="modal fade" id="imagenModal" tabindex="-1" aria-labelledby="imagenModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content bg-dark text-white border-secondary">
-                <header class="modal-header border-secondary">
-                    <h5 class="modal-title" id="imagenModalLabel">Vista previa</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </header>
-                <div class="modal-body text-center">
-                    <img id="imagenAmpliada" src="" class="img-fluid rounded" alt="Imagen ampliada" style="max-height: 80vh;" />
-                </div>
+<!-- Modal para ampliar la imagen -->
+<div class="modal fade" id="imagenModal" tabindex="-1" aria-labelledby="imagenModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <header class="modal-header border-secondary">
+                <h5 class="modal-title" id="imagenModalLabel">Vista previa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </header>
+            <div class="modal-body text-center">
+                <img id="imagenAmpliada" src="" class="img-fluid rounded" alt="Imagen ampliada" style="max-height: 80vh;" />
             </div>
         </div>
     </div>
+</div>
 
-    @section Scripts {
-        <script>
-                // Script para pasar la imagen seleccionada al modal
-                var imagenModal = document.getElementById('imagenModal');
-                imagenModal.addEventListener('show.bs.modal', function (event) {
-                    var button = event.relatedTarget; // La imagen que se presionó
-                    var src = button.getAttribute('data-bs-src');
-                    var titulo = button.getAttribute('data-bs-titulo');
+@section Scripts {
+    <script>
+            // Script para pasar la imagen seleccionada al modal
+            var imagenModal = document.getElementById('imagenModal');
+            imagenModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // La imagen que se presionó
+                var src = button.getAttribute('data-bs-src');
+                var titulo = button.getAttribute('data-bs-titulo');
 
-                    var modalImage = document.getElementById('imagenAmpliada');
-                    var modalTitle = document.getElementById('imagenModalLabel');
+                var modalImage = document.getElementById('imagenAmpliada');
+                var modalTitle = document.getElementById('imagenModalLabel');
 
-                    modalImage.src = src;
-                    modalTitle.textContent = titulo;
-                });
-        </script>
-    }
-
+                modalImage.src = src;
+                modalTitle.textContent = titulo;
+            });
+    </script>
+}
 </main>
