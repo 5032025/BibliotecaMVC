@@ -1,4 +1,4 @@
-namespace PrimerSemana.Models
+﻿namespace PrimerSemana.Models
 {
     public class ErrorViewModel
     {

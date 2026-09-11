@@ -3,19 +3,20 @@
     public class Prestamo
     {
         public int Id { get; set; }
-        public string Libro { get; set; }
-        public string Autor { get; set; }
-        public string Usuario { get; set; }
-        public DateTime FechaVencimiento { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public DateTime ReservationDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
+        public ReserveStatus Status { get; set; }
 
-        
-        public EstadoPrestamo Estado { get; set; }
+        // Propiedades de apoyo para mostrar los datos en la vista si vienen mapeados
+        public string Libro { get; set; } = string.Empty;
+        public string Autor { get; set; } = string.Empty;
     }
 
-    public enum EstadoPrestamo
+    public enum ReserveStatus
     {
-        Activo,
-        Vencido,
-        Devuelto
+        Active,
+        Cancelled,
+        Completed
     }
 }

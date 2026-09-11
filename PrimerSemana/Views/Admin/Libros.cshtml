@@ -7,26 +7,23 @@
 <div class="container mt-4 text-white">
     <h2 class="text-warning mb-4">Gestión de Libros</h2>
 
-    <!-- Formulario Dinámico para Registrar o Modificar Libros -->
+    <!-- Formulario Dinámico -->
     <div class="card p-4 mb-5" style="background-color: #1c2541; border: none;">
         <h4 id="form-titulo-libro" class="mb-3 text-white">Registrar Nuevo Libro</h4>
         <form id="libro-form" asp-action="CrearLibro" method="post" class="row g-3">
+            <input type="hidden" id="LibroId" name="Id" value="0" />
 
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label text-white-50">Título</label>
-                <input type="text" id="Titulo" name="Titulo" class="form-control bg-dark text-white border-secondary" required />
+                <input type="text" id="Title" name="Title" class="form-control bg-dark text-white border-secondary" required />
             </div>
             <div class="col-md-3">
-                <label class="form-label text-white-50">Autor</label>
-                <input type="text" id="Autor" name="Autor" class="form-control bg-dark text-white border-secondary" required />
+                <label class="form-label text-white-50">Género</label>
+                <input type="text" id="Genre" name="Genre" class="form-control bg-dark text-white border-secondary" required />
             </div>
-            <div class="col-md-2">
-                <label class="form-label text-white-50">Categoría</label>
-                <input type="text" id="Categoria" name="Categoria" class="form-control bg-dark text-white border-secondary" required />
-            </div>
-            <div class="col-md-2">
-                <label class="form-label text-white-50">Precio ($)</label>
-                <input type="number" step="0.01" id="Precio" name="Precio" class="form-control bg-dark text-white border-secondary" required />
+            <div class="col-md-3">
+                <label class="form-label text-white-50">Año de Publicación</label>
+                <input type="number" id="PublicationYear" name="PublicationYear" class="form-control bg-dark text-white border-secondary" required />
             </div>
             <div class="col-md-2 d-flex align-items-end gap-2">
                 <button type="submit" id="btn-submit-libro" class="btn btn-warning w-100 fw-bold">Guardar</button>
@@ -42,11 +39,10 @@
             <table class="table table-dark table-hover align-middle">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Título</th>
-                        <th>Autor</th>
-                        <th>Categoría</th>
-                        <th>Precio</th>
-                        <th>Disponibilidad</th>
+                        <th>Género</th>
+                        <th>Año</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -54,33 +50,19 @@
                     @foreach (var libro in Model)
                     {
                         <tr>
-                            <td>@libro.Titulo</td>
-                            <td>@libro.Autor</td>
-                            <td>@libro.Categoria</td>
-                            <td>$@libro.Precio</td>
+                            <td>@libro.Id</td>
+                            <td>@libro.Title</td>
+                            <td>@libro.Genre</td>
+                            <td>@libro.PublicationYear</td>
                             <td>
-                                @if (libro.Disponible)
-                                {
-                                    <span class="badge bg-success">Disponible</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">No Disponible</span>
-                                }
-                            </td>
-                            <td>
-                                <!-- Botón Modificar que carga los datos aquí mismo -->
                                 <button type="button" class="btn btn-sm btn-outline-warning me-1"
-                                        onclick="cargarParaEditarLibro('@libro.Titulo', '@libro.Autor', '@libro.Categoria', '@libro.Precio')">
+                                        onclick="cargarParaEditarLibro('@libro.Id', '@libro.Title', '@libro.Genre', '@libro.PublicationYear')">
                                     Modificar
                                 </button>
 
-                                <!-- Botón Cambiar Estado / Disponibilidad -->
-                                <form asp-action="CambiarEstadoLibro" method="post" style="display:inline;">
-                                    <input type="hidden" name="titulo" value="@libro.Titulo" />
-                                    <button type="submit" class="btn btn-sm @(libro.Disponible ? "btn-outline-danger" : "btn-outline-success")">
-                                        @(libro.Disponible ? "Deshabilitar" : "Habilitar")
-                                    </button>
+                                <form asp-action="EliminarLibro" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@libro.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
                                 </form>
                             </td>
                         </tr>
@@ -97,19 +79,16 @@
 
 @section Scripts {
     <script>
-        function cargarParaEditarLibro(titulo, autor, categoria, precio) {
+        function cargarParaEditarLibro(id, title, genre, publicationYear) {
             const form = document.getElementById('libro-form');
             form.action = '@Url.Action("EditarLibro", "Admin")';
 
-            const inputTitulo = document.getElementById('Titulo');
-            inputTitulo.value = titulo;
-            inputTitulo.readOnly = true;
+            document.getElementById('LibroId').value = id;
+            document.getElementById('Title').value = title;
+            document.getElementById('Genre').value = genre;
+            document.getElementById('PublicationYear').value = publicationYear;
 
-            document.getElementById('Autor').value = autor;
-            document.getElementById('Categoria').value = categoria;
-            document.getElementById('Precio').value = precio;
-
-            document.getElementById('form-titulo-libro').innerText = "Modificar Libro: " + titulo;
+            document.getElementById('form-titulo-libro').innerText = "Modificar Libro (ID: " + id + ")";
             const btnSubmit = document.getElementById('btn-submit-libro');
             btnSubmit.innerText = "Actualizar";
             btnSubmit.classList.remove('btn-warning');
@@ -123,10 +102,7 @@
             const form = document.getElementById('libro-form');
             form.action = '@Url.Action("CrearLibro", "Admin")';
 
-            const inputTitulo = document.getElementById('Titulo');
-            inputTitulo.value = "";
-            inputTitulo.readOnly = false;
-
+            document.getElementById('LibroId').value = "0";
             form.reset();
 
             document.getElementById('form-titulo-libro').innerText = "Registrar Nuevo Libro";

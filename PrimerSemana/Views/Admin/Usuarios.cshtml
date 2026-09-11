@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PrimerSemana.Controllers.UsuarioModelSimulado>
+﻿@model IEnumerable<PrimerSemana.Models.Usuario>
 
 @{
     ViewData["Title"] = "Gestión de Usuarios";
@@ -16,21 +16,18 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Correo Electrónico</th>
-                        <th>Ubicación</th>
-                        <th>Edad</th>
                         <th>Rol</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var usuario in Model)
                     {
                         <tr>
-                            <td>@usuario.Nombre</td>
+                            <td>@usuario.Name</td>
                             <td>@usuario.Email</td>
-                            <td>@usuario.Ubicacion</td>
-                            <td>@usuario.Edad</td>
                             <td>
-                                @if (usuario.Rol == "Admin")
+                                @if (usuario.Role == "Admin")
                                 {
                                     <span class="badge bg-warning text-dark">Admin</span>
                                 }
@@ -38,6 +35,12 @@
                                 {
                                     <span class="badge bg-info text-dark">Usuario</span>
                                 }
+                            </td>
+                            <td>
+                                <form asp-action="CambiarRolUsuario" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@usuario.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-warning">Cambiar Rol</button>
+                                </form>
                             </td>
                         </tr>
                     }

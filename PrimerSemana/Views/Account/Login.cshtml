@@ -8,12 +8,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciar Sesión - BlibioCore</title>
+    <title>Iniciar Sesión - BiblioCore</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
             body {
-                background-color: #0b132b; /* Fondo oscuro principal */
-                color: #ffffff; /* Color de texto global blanco */
+                background-color: #0b132b;
+                color: #ffffff;
                 height: 100vh;
                 display: flex;
                 align-items: center;
@@ -23,7 +23,7 @@
             }
 
             .card-auth {
-                background-color: #1c2541; /* Fondo de la tarjeta (más claro que el body) */
+                background-color: #1c2541;
                 border: none;
                 padding: 2.5rem;
                 border-radius: 12px;
@@ -31,18 +31,18 @@
                 max-width: 420px;
                 box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             }
-                /* Estilos para asegurar que los textos sean blancos */
+
                 .card-auth h3,
                 .card-auth p,
                 .card-auth label,
                 .text-muted {
-                    color: #ffffff !important; /* Forzamos blanco en elementos clave */
+                    color: #ffffff !important;
                 }
 
             .form-control {
-                background-color: #0b132b; /* Fondo oscuro en input */
+                background-color: #0b132b;
                 border: 1px solid #3a506b;
-                color: #ffffff; /* Texto del input blanco */
+                color: #ffffff;
             }
 
                 .form-control:focus {
@@ -53,7 +53,7 @@
                 }
 
             ::placeholder {
-                color: #6c757d !important; /* Placeholder grisáceo para contraste */
+                color: #6c757d !important;
                 opacity: 1;
             }
 
@@ -72,7 +72,7 @@
 <body>
 
     <div class="card card-auth">
-        <h3 class="text-center mb-1 fw-bold">BlibioCore</h3>
+        <h3 class="text-center mb-1 fw-bold">BiblioCore</h3>
         <p class="text-center mb-4">Inicia sesión para continuar</p>
 
         @if (!ViewData.ModelState.IsValid)
@@ -82,21 +82,21 @@
             </div>
         }
 
-        <form asp-controller="Usuario" asp-action="Login" method="post">
+        <form asp-controller="Account" asp-action="Login" method="post">
             <div class="mb-3">
                 <label class="form-label">Correo Electrónico</label>
-                <input type="email" name="email" class="form-control" required placeholder="admin@bibliocore.com" />
+                <input type="email" name="Email" class="form-control" required placeholder="admin@bibliocore.com" />
             </div>
             <div class="mb-3">
                 <label class="form-label">Contraseña</label>
-                <input type="password" name="password" class="form-control" required placeholder="••••••••" />
+                <input type="password" name="Password" class="form-control" required placeholder="••••••••" />
             </div>
             <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2">Ingresar</button>
         </form>
 
         <div class="text-center mt-4">
             <span class="text-muted small">¿No tienes una cuenta? </span>
-            <a asp-controller="Usuario" asp-action="Register" class="text-warning text-decoration-none small fw-bold">Regístrate aquí</a>
+            <a asp-controller="Account" asp-action="Register" class="text-warning text-decoration-none small fw-bold">Regístrate aquí</a>
         </div>
     </div>
 

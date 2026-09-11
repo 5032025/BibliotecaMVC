@@ -1,25 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimerSemana.Models;
+using PrimerSemana.Services;
 
-namespace PrimerSemana.Controllers
-
-// Controlador para gestionar las operaciones relacionadas con los préstamos
+[Authorize]
+public class PrestamoController : Controller
 {
-    public class PrestamoController : Controller
-    {
-        
-        public IActionResult Index()
-        {
-            var lista = new List<Prestamo>
-    {
-        new Prestamo { Id = 1, Libro = "Fundación", Autor = "Isaac Asimov", Usuario = "Usuario Demo", FechaVencimiento = DateTime.Now.AddDays(7), Estado = EstadoPrestamo.Activo },
-        new Prestamo { Id = 2, Libro = "Los pilares de la Tierra", Autor = "Ken Follett", Usuario = "Usuario Demo", FechaVencimiento = DateTime.Now.AddDays(-2), Estado = EstadoPrestamo.Vencido },
-        
-        
-        new Prestamo { Id = 3, Libro = "El resplandor", Autor = "Stephen King", Usuario = "Usuario Demo", FechaVencimiento = DateTime.Now.AddDays(-10), Estado = EstadoPrestamo.Devuelto }
-    };
+    private readonly IService_API _apiService;
 
-            return View(lista);
+    public PrestamoController(IService_API apiService)
+    {
+        _apiService = apiService;
+    }
+
+    public async Task<IActionResult> Index(int page = 1, string search = "")
+    {
+        var prestamos = await _apiService.GetAsync<Prestamo>($"Reservas?page={page}&search={search}");
+
+        ViewBag.CurrentPage = page;
+        ViewBag.Search = search;
+
+        return View(prestamos ?? new List<Prestamo>());
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var prestamo = await _apiService.GetSingleAsync<Prestamo>($"Reservas/{id}");
+        if (prestamo == null) return NotFound();
+        return View(prestamo);
+    }
+
+    [HttpGet]
+    public IActionResult Create() => View();
+
+    [HttpPost]
+    public async Task<IActionResult> Create(Prestamo model)
+    {
+        if (ModelState.IsValid)
+        {
+            var response = await _apiService.PostAsync("Reservas", model);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
+        return View(model);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _apiService.DeleteAsync($"Reservas/{id}");
+        return RedirectToAction(nameof(Index));
     }
 }

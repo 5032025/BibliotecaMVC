@@ -6,46 +6,28 @@
 
 <div class="container mt-5">
     <div class="row">
-        <!-- Bucle que recorre la lista de autores -->
         @foreach (var autor in Model)
         {
             <div class="col-md-4 mb-4">
-                <!-- Si el autor está inactivo, le bajamos la opacidad y cambiamos ligeramente el borde -->
-                <div class="card h-100 border-0 shadow-sm custom-card bg-dark text-white @(autor.Estado == PrimerSemana.Models.EstadoAutor.Activo ? "" : "opacity-50 border border-danger")">
+                <div class="card h-100 border-0 shadow-sm custom-card bg-dark text-white">
                     <div class="card-body p-4 text-center">
-                        <!-- Imagen del autor -->
-                        <img src="~/images/@autor.FotoUrl"
-                             alt="@autor.Nombre"
+                        <!-- Imagen del autor apuntando a wwwroot/images/ -->
+                        <img src="~/images/@autor.Imagen"
+                             alt="@autor.Name"
                              class="img-fluid rounded-circle mb-4 shadow-sm"
                              style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #334155;">
 
-                        <h5 class="card-title fw-bold mb-3">@autor.Nombre</h5>
+                        <h5 class="card-title fw-bold mb-3">@autor.Name</h5>
 
                         <p class="card-text mb-1 text-start">
-                            <i class="bi bi-globe me-2"></i><strong>Nacionalidad:</strong> @autor.Nacionalidad
+                            <i class="bi bi-globe me-2"></i><strong>Nacionalidad:</strong> @autor.Nationality
                         </p>
 
-                        <!-- Procesa la fecha de nacimiento para que se muestre en el formato deseado -->
                         <p class="card-text mb-4 text-start">
-                            <i class="bi bi-calendar-event me-2"></i><strong>Nacimiento:</strong> @autor.FechaNacimiento.ToString("dd/MM/yyyy")
+                            <i class="bi bi-calendar-event me-2"></i><strong>Nacimiento:</strong> @autor.BirthDate.ToString("dd/MM/yyyy")
                         </p>
 
-                        <!-- El estado del autor se muestra con la etiqueta correspondiente -->
-                        <p class="card-text mb-4 text-start">
-                            <i class="bi bi-info-circle me-2"></i><strong>Estado:</strong>
-                            <span class="badge @(autor.Estado == PrimerSemana.Models.EstadoAutor.Activo ? "bg-success" : "bg-danger")">
-                                @autor.Estado.ToString()
-                            </span>
-                        </p>
-
-                        @if (autor.Estado == PrimerSemana.Models.EstadoAutor.Activo)
-                        {
-                            <a href="#" class="text-decoration-none fw-bold d-block text-start text-warning">Ver libros del autor →</a>
-                        }
-                        else
-                        {
-                            <span class="text-danger small fw-bold d-block text-start">No disponible temporalmente</span>
-                        }
+                        <a href="#" class="text-decoration-none fw-bold d-block text-start text-warning">Ver libros del autor →</a>
                     </div>
                 </div>
             </div>

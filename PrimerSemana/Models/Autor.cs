@@ -3,16 +3,21 @@
     public class Autor
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Nacionalidad { get; set; }
-        public DateTime FechaNacimiento { get; set; }
-        public string FotoUrl { get; set; }
-        public EstadoAutor Estado { get; set; } = EstadoAutor.Activo;
+        public string Name { get; set; }
+        public string BirthPlace { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string Description { get; set; }
+        public string Nationality { get; set; }
+        public List<Libro>? Books { get; set; }
 
+        public string Imagen { get; set; }
+
+        public AuthorStatus Status { get; set; }
     }
 
-    public enum EstadoAutor 
+    public enum AuthorStatus
     {
-        Activo, Inactivo
+        Active,
+        Inactive
     }
 }

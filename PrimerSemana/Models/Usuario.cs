@@ -2,13 +2,25 @@
 {
     public class Usuario
     {
-        public string Nombre { get; set; }
-        public string Email { get; set; }
-        public string Ubicacion { get; set; }
-        public int Edad { get; set; }
+        public string Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
 
-        public string Rol { get; set; } 
+        // Propiedad calculada o directa para que la vista muestre el nombre completo fácilmente
+        public string Name => $"{FirstName} {LastName}";
 
-        public string Password { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string Tel { get; set; } = string.Empty;
+
+        // Propiedad que faltaba para el rol
+        public string Role { get; set; } = "Usuario";
+    }
+
+    public class LoginViewModel
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public bool RememberMe { get; set; }
     }
 }
