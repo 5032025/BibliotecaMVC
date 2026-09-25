@@ -10,25 +10,40 @@
             <hr class="my-4 border-secondary">
 
             <div class="row g-3">
-                <div class="col-md-4">
-                    <div class="p-3 bg-dark rounded border border-secondary">
-                        <h5 class="text-warning">Gestión de Libros</h5>
-                        <p class="small text-muted">Añade, edita o cambia la disponibilidad de los libros.</p>
-                        <a asp-controller="Admin" asp-action="Libros" class="btn btn-sm btn-outline-warning">Ir a Libros</a>
+                <div class="col-md-3">
+                    <div class="p-3 bg-dark rounded border border-secondary h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="text-warning">Gestión de Libros</h5>
+                            <p class="small text-muted">Añade, edita o cambia la disponibilidad de los libros.</p>
+                        </div>
+                        <a asp-controller="Book" asp-action="Index" class="btn btn-sm btn-outline-warning mt-2">Ir a Libros</a>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="p-3 bg-dark rounded border border-secondary">
-                        <h5 class="text-warning">Gestión de Autores</h5>
-                        <p class="small text-muted">Registra autores o cambia su estado de activación.</p>
-                        <a asp-controller="Admin" asp-action="Autores" class="btn btn-sm btn-outline-warning">Ir a Autores</a>
+                <div class="col-md-3">
+                    <div class="p-3 bg-dark rounded border border-secondary h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="text-warning">Gestión de Autores</h5>
+                            <p class="small text-muted">Registra autores o cambia su estado de activación.</p>
+                        </div>
+                        <a asp-controller="Autor" asp-action="Index" class="btn btn-sm btn-outline-warning mt-2">Ir a Autores</a>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="p-3 bg-dark rounded border border-secondary">
-                        <h5 class="text-warning">Sesión</h5>
-                        <p class="small text-muted">Cierra tu sesión de administrador de forma segura.</p>
-                        <a asp-controller="Usuario" asp-action="Logout" class="btn btn-sm btn-outline-danger">Cerrar Sesión</a>
+                <div class="col-md-3">
+                    <div class="p-3 bg-dark rounded border border-secondary h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="text-warning">Gestión de Categorías</h5>
+                            <p class="small text-muted">Administra las categorías de los libros.</p>
+                        </div>
+                        <a asp-controller="Categoria" asp-action="Index" class="btn btn-sm btn-outline-warning mt-2">Ir a Categorías</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-dark rounded border border-secondary h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="text-warning">Sesión</h5>
+                            <p class="small text-muted">Cierra tu sesión de administrador de forma segura.</p>
+                        </div>
+                        <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-outline-danger mt-2">Cerrar Sesión</a>
                     </div>
                 </div>
             </div>

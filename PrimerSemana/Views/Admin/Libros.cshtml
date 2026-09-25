@@ -7,32 +7,47 @@
 <div class="container mt-4 text-white">
     <h2 class="text-warning mb-4">Gestión de Libros</h2>
 
-    <!-- Formulario Dinámico -->
     <div class="card p-4 mb-5" style="background-color: #1c2541; border: none;">
         <h4 id="form-titulo-libro" class="mb-3 text-white">Registrar Nuevo Libro</h4>
-        <form id="libro-form" asp-action="CrearLibro" method="post" class="row g-3">
+
+        <form id="libro-form" asp-action="Create" method="post" class="row g-3" onsubmit="confirmarGuardar(event, 'libro-form', document.getElementById('LibroId').value !== '0' ? '¿Deseas actualizar los datos de este libro?' : '¿Deseas registrar un nuevo libro?')">
             <input type="hidden" id="LibroId" name="Id" value="0" />
+            <input type="hidden" name="Imagen" value="default.png" />
+
+            <div asp-validation-summary="All" class="text-danger fw-bold col-12"></div>
 
             <div class="col-md-4">
                 <label class="form-label text-white-50">Título</label>
                 <input type="text" id="Title" name="Title" class="form-control bg-dark text-white border-secondary" required />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label text-white-50">Género</label>
                 <input type="text" id="Genre" name="Genre" class="form-control bg-dark text-white border-secondary" required />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label text-white-50">Año de Publicación</label>
                 <input type="number" id="PublicationYear" name="PublicationYear" class="form-control bg-dark text-white border-secondary" required />
             </div>
-            <div class="col-md-2 d-flex align-items-end gap-2">
-                <button type="submit" id="btn-submit-libro" class="btn btn-warning w-100 fw-bold">Guardar</button>
-                <button type="button" id="btn-cancelar-libro" class="btn btn-outline-secondary w-100 fw-bold d-none" onclick="cancelarEdicionLibro()">Cancelar</button>
+            <div class="col-md-4">
+                <label class="form-label text-white-50">Descripción</label>
+                <input type="text" id="Description" name="Description" class="form-control bg-dark text-white border-secondary" placeholder="Breve descripción" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-white-50">ID del Autor (authorIds)</label>
+                <input type="number" id="authorIdForm" name="autorIdForm" class="form-control bg-dark text-white border-secondary" placeholder="Ej. 1" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-white-50">ID de la Categoría (categoriaIds)</label>
+                <input type="number" id="categoriaIdForm" name="categoriaIdForm" class="form-control bg-dark text-white border-secondary" placeholder="Ej. 2" required />
+            </div>
+
+            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+                <button type="submit" id="btn-submit-libro" class="btn btn-warning fw-bold px-4">Guardar</button>
+                <button type="button" id="btn-cancelar-libro" class="btn btn-outline-secondary fw-bold d-none px-4" onclick="cancelarEdicionLibro()">Cancelar</button>
             </div>
         </form>
     </div>
 
-    <!-- Tabla de Libros -->
     <div class="card p-4" style="background-color: #1c2541; border: none;">
         <h4 class="mb-3 text-white">Listado de Libros en Sistema</h4>
         <div class="table-responsive">
@@ -56,11 +71,11 @@
                             <td>@libro.PublicationYear</td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-outline-warning me-1"
-                                        onclick="cargarParaEditarLibro('@libro.Id', '@libro.Title', '@libro.Genre', '@libro.PublicationYear')">
+                                        onclick="cargarParaEditarLibro('@libro.Id', '@libro.Title', '@libro.Genre', '@libro.PublicationYear', '@libro.Description')">
                                     Modificar
                                 </button>
 
-                                <form asp-action="EliminarLibro" method="post" style="display:inline;">
+                                <form asp-action="Delete" method="post" style="display:inline;" onsubmit="confirmarAccionForm(event, this, '¿Eliminar libro?', '¿Estás seguro de eliminar este libro?')">
                                     <input type="hidden" name="id" value="@libro.Id" />
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
                                 </form>
@@ -79,14 +94,15 @@
 
 @section Scripts {
     <script>
-        function cargarParaEditarLibro(id, title, genre, publicationYear) {
+        function cargarParaEditarLibro(id, title, genre, publicationYear, description) {
             const form = document.getElementById('libro-form');
-            form.action = '@Url.Action("EditarLibro", "Admin")';
+            form.action = '@Url.Action("Edit", "Book")/' + id;
 
             document.getElementById('LibroId').value = id;
             document.getElementById('Title').value = title;
             document.getElementById('Genre').value = genre;
             document.getElementById('PublicationYear').value = publicationYear;
+            document.getElementById('Description').value = description || '';
 
             document.getElementById('form-titulo-libro').innerText = "Modificar Libro (ID: " + id + ")";
             const btnSubmit = document.getElementById('btn-submit-libro');
@@ -100,7 +116,7 @@
 
         function cancelarEdicionLibro() {
             const form = document.getElementById('libro-form');
-            form.action = '@Url.Action("CrearLibro", "Admin")';
+            form.action = '@Url.Action("Create", "Book")';
 
             document.getElementById('LibroId').value = "0";
             form.reset();

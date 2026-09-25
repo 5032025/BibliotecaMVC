@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using PrimerSemana.Models;
 using PrimerSemana.Services;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text.Json;
 
 public class AccountController : Controller
 {
@@ -39,31 +41,52 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login() => View();
 
+
+
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        var response = await _apiService.PostAsync("Account/Login", model);
+        var response = await _apiService.PostAsync("Account/login", model);
+
         if (!response.IsSuccessStatusCode)
         {
-            ModelState.AddModelError("", "Credenciales inválidas.");
+            ModelState.AddModelError(string.Empty, "Credenciales incorrectas.");
             return View(model);
         }
 
-        // Leemos la respuesta de la API que trae el token: { token = "..." }
-        var result = await response.Content.ReadFromJsonAsync<TokenResponseModel>();
+        using var jsonDoc = await response.Content.ReadFromJsonAsync<JsonDocument>();
+        var token = jsonDoc?.RootElement.GetProperty("token").GetString();
 
-        var claims = new List<Claim>
+        if (string.IsNullOrEmpty(token))
         {
-            new Claim(ClaimTypes.Name, model.Email),
-            new Claim("Token", result!.Token) // Guardamos el JWT para que el ApiService lo reenvíe
-        };
+            ModelState.AddModelError(string.Empty, "No se pudo obtener el token de acceso.");
+            return View(model);
+        }
+
+        // 1. Decodificamos el JWT para extraer automáticamente todas las Claims (incluyendo los Roles)
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+        var claims = jwtToken.Claims.ToList();
+
+        // 2. Agregamos el token plano para que tus repositorios HTTP puedan usarlo después
+        claims.Add(new Claim("Token", token));
 
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        // 3. Iniciamos sesión en el MVC con la identidad enriquecida
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
+        // 4. Verificamos inteligentemente si el usuario posee el rol de Administrador
+        bool isAdmin = claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "Admin");
+
+        if (isAdmin)
+        {
+            return RedirectToAction("Index", "Admin"); // 👈 Redirige al panel de administración si es admin
+        }
+
+        // 5. Si es un usuario normal, va al Home
         return RedirectToAction("Index", "Home");
     }
-
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

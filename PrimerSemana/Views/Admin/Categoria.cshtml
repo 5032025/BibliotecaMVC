@@ -1,0 +1,110 @@
+﻿@model IEnumerable<PrimerSemana.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Gestión de Categorías";
+}
+
+<div class="container mt-4 text-white">
+    <h2 class="text-warning mb-4">Gestión de Categorías</h2>
+
+    <div class="card p-4 mb-5" style="background-color: #1c2541; border: none;">
+        <h4 id="form-titulo-categoria" class="mb-3 text-white">Registrar Nueva Categoría</h4>
+
+        <!-- Formulario limpio -->
+        <form id="categoria-form" asp-action="Create" method="post" class="row g-3" onsubmit="confirmarGuardar(event, 'categoria-form', document.getElementById('CategoriaId').value != '0' ? '¿Deseas actualizar los datos de esta categoría?' : '¿Deseas registrar una nueva categoría?')">
+            <input type="hidden" id="CategoriaId" name="Id" value="0" />
+
+            <div class="col-md-5">
+                <label class="form-label text-white-50">Nombre de la Categoría</label>
+                <input type="text" id="Name" name="Name" class="form-control bg-dark text-white border-secondary" required />
+            </div>
+            <div class="col-md-5">
+                <label class="form-label text-white-50">Descripción</label>
+                <input type="text" id="Description" name="Description" class="form-control bg-dark text-white border-secondary" required />
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" id="btn-submit-categoria" class="btn btn-warning w-100 fw-bold">Guardar</button>
+                <button type="button" id="btn-cancelar-categoria" class="btn btn-outline-secondary w-100 fw-bold d-none" onclick="cancelarEdicionCategoria()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card p-4" style="background-color: #1c2541; border: none;">
+        <h4 class="mb-3 text-white">Listado de Categorías</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var categoria in Model)
+                    {
+                        <tr>
+                            <td>@categoria.Id</td>
+                            <td>@categoria.Name</td>
+                            <td>@categoria.Description</td>
+                            <td>
+                                <button type="type" class="btn btn-sm btn-outline-warning me-1"
+                                        onclick="cargarParaEditarCategoria('@categoria.Id', '@categoria.Name', '@categoria.Description')">
+                                    Modificar
+                                </button>
+
+                                <form asp-action="Delete" method="post" style="display:inline;" onsubmit="confirmarAccionForm(event, this, '¿Eliminar categoría?', '¿Estás seguro de eliminar esta categoría?')">
+                                    <input type="hidden" name="id" value="@categoria.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-secondary">Volver al Panel</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function cargarParaEditarCategoria(id, name, description) {
+            const form = document.getElementById('categoria-form');
+            form.action = '@Url.Action("Edit", "Categoria")/' + id;
+
+            document.getElementById('CategoriaId').value = id;
+            document.getElementById('Name').value = name;
+            document.getElementById('Description').value = description;
+
+            document.getElementById('form-titulo-categoria').innerText = "Modificar Categoría (ID: " + id + ")";
+            const btnSubmit = document.getElementById('btn-submit-categoria');
+            btnSubmit.innerText = "Actualizar";
+            btnSubmit.classList.remove('btn-warning');
+            btnSubmit.classList.add('btn-success');
+
+            document.getElementById('btn-cancelar-categoria').classList.remove('d-none');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicionCategoria() {
+            const form = document.getElementById('categoria-form');
+            form.action = '@Url.Action("Create", "Categoria")';
+
+            document.getElementById('CategoriaId').value = "0";
+            form.reset();
+
+            document.getElementById('form-titulo-categoria').innerText = "Registrar Nueva Categoría";
+            const btnSubmit = document.getElementById('btn-submit-categoria');
+            btnSubmit.innerText = "Guardar";
+            btnSubmit.classList.remove('btn-success');
+            btnSubmit.classList.add('btn-warning');
+
+            document.getElementById('btn-cancelar-categoria').classList.add('d-none');
+        }
+    </script>
+}

@@ -17,15 +17,21 @@ public class AutorController : Controller
     {
         var autores = await _apiService.GetAsync<Autor>($"Autores?page={page}&search={search}");
 
+        // Si el usuario autenticado es Administrador, lo mandamos a la vista del panel admin
+        if (User.IsInRole("Admin"))
+        {
+            return View("~/Views/Admin/Autores.cshtml", autores ?? new List<Autor>());
+        }
+
+        // Si es un usuario normal, le mostramos la vista estándar
         ViewBag.CurrentPage = page;
         ViewBag.Search = search;
-
         return View(autores ?? new List<Autor>());
     }
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public IActionResult Create() => View();
+    public IActionResult Create() => RedirectToAction(nameof(Index));
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -39,17 +45,12 @@ public class AutorController : Controller
                 return RedirectToAction(nameof(Index));
             }
         }
-        return View(model);
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Edit(int id)
-    {
-        var autor = await _apiService.GetSingleAsync<Autor>($"Autores/{id}");
-        if (autor == null) return NotFound();
-        return View(autor);
-    }
+    public IActionResult Edit(int id) => RedirectToAction(nameof(Index));
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -63,7 +64,7 @@ public class AutorController : Controller
                 return RedirectToAction(nameof(Index));
             }
         }
-        return View(model);
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]

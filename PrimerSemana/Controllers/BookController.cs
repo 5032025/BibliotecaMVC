@@ -17,6 +17,13 @@ public class BookController : Controller
     {
         var books = await _apiService.GetAsync<Libro>($"Libros?page={page}&search={search}");
 
+        // Si el usuario autenticado es Administrador, lo dirigimos a la vista de administración en Admin/Libros.cshtml
+        if (User.IsInRole("Admin"))
+        {
+            return View("~/Views/Admin/Libros.cshtml", books ?? new List<Libro>());
+        }
+
+        // Si es un usuario normal, enviamos los datos a su respectiva vista estándar
         ViewBag.CurrentPage = page;
         ViewBag.Search = search;
 
@@ -32,30 +39,38 @@ public class BookController : Controller
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public IActionResult Create() => View();
+    public IActionResult Create() => RedirectToAction(nameof(Index));
+
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Create(Libro model)
+    public async Task<IActionResult> Create(Libro model, int autorIdForm, int categoriaIdForm)
     {
+        // Aseguramos que se asigne a AutorIds (con 'r') tal como lo exige la API
+        model.AutorIds = new List<int> { autorIdForm };
+        model.CategoriaIds = new List<int> { categoriaIdForm };
+
         if (ModelState.IsValid)
         {
             var response = await _apiService.PostAsync("Libros", model);
+
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, "Error de API: " + errorContent);
+            }
         }
-        return View(model);
+
+        var books = await _apiService.GetAsync<Libro>("Libros");
+        return View("~/Views/Admin/Libros.cshtml", books ?? new List<Libro>());
     }
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Edit(int id)
-    {
-        var book = await _apiService.GetSingleAsync<Libro>($"Libros/{id}");
-        if (book == null) return NotFound();
-        return View(book);
-    }
+    public IActionResult Edit(int id) => RedirectToAction(nameof(Index));
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -69,7 +84,7 @@ public class BookController : Controller
                 return RedirectToAction(nameof(Index));
             }
         }
-        return View(model);
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]

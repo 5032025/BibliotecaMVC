@@ -17,6 +17,13 @@ public class CategoriaController : Controller
     {
         var categorias = await _apiService.GetAsync<Categoria>($"Categorias?page={page}&search={search}");
 
+        // Si el usuario autenticado es Administrador, lo enviamos a la vista unificada del panel admin
+        if (User.IsInRole("Admin"))
+        {
+            return View("~/Views/Admin/Categoria.cshtml", categorias ?? new List<Categoria>());
+        }
+
+        // Si es un usuario normal, enviamos los datos a la vista estándar
         ViewBag.CurrentPage = page;
         ViewBag.Search = search;
 
@@ -25,7 +32,7 @@ public class CategoriaController : Controller
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public IActionResult Create() => View();
+    public IActionResult Create() => RedirectToAction(nameof(Index));
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -39,17 +46,12 @@ public class CategoriaController : Controller
                 return RedirectToAction(nameof(Index));
             }
         }
-        return View(model);
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Edit(int id)
-    {
-        var categoria = await _apiService.GetSingleAsync<Categoria>($"Categorias/{id}");
-        if (categoria == null) return NotFound();
-        return View(categoria);
-    }
+    public IActionResult Edit(int id) => RedirectToAction(nameof(Index));
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -63,7 +65,7 @@ public class CategoriaController : Controller
                 return RedirectToAction(nameof(Index));
             }
         }
-        return View(model);
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]

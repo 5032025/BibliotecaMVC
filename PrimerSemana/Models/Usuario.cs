@@ -14,7 +14,7 @@
         public string Tel { get; set; } = string.Empty;
 
         // Propiedad que faltaba para el rol
-        public string Role { get; set; } = "Usuario";
+        public string Role { get; set; } 
     }
 
     public class LoginViewModel

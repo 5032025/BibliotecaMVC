@@ -7,32 +7,45 @@
 <div class="container mt-4 text-white">
     <h2 class="text-warning mb-4">Gestión de Autores</h2>
 
-    <!-- Formulario Dinámico -->
     <div class="card p-4 mb-5" style="background-color: #1c2541; border: none;">
-        <h4 id="form-titulo" class="mb-3 text-white">Registrar Nuevo Autor</h4>
-        <form id="autor-form" asp-action="CrearAutor" method="post" class="row g-3">
+        <h4 id="form-titulo-autor" class="mb-3 text-white">Registrar Nuevo Autor</h4>
+
+        <!-- Formulario estructurado para enviar los datos con el formato correcto -->
+        <form id="autor-form" asp-action="Create" method="post" class="row g-3" onsubmit="confirmarGuardar(event, 'autor-form', document.getElementById('AutorId').value != '0' ? '¿Deseas actualizar los datos de este autor?' : '¿Deseas registrar un nuevo autor?')">
             <input type="hidden" id="AutorId" name="Id" value="0" />
+            <input type="hidden" name="Imagen" value="default.png" />
+            <!-- Resumen de validación por si ocurre algún error -->
+            <div asp-validation-summary="All" class="text-danger fw-bold col-12"></div>
 
             <div class="col-md-4">
                 <label class="form-label text-white-50">Nombre del Autor</label>
                 <input type="text" id="Name" name="Name" class="form-control bg-dark text-white border-secondary" required />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label text-white-50">Nacionalidad</label>
                 <input type="text" id="Nationality" name="Nationality" class="form-control bg-dark text-white border-secondary" required />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label text-white-50">Fecha de Nacimiento</label>
+                <!-- Usamos type="date" para que el navegador envíe el formato YYYY-MM-DD exacto como Postman -->
                 <input type="date" id="BirthDate" name="BirthDate" class="form-control bg-dark text-white border-secondary" required />
             </div>
+            <div class="col-md-4">
+                <label class="form-label text-white-50">Lugar de Nacimiento</label>
+                <input type="text" id="BirthPlace" name="BirthPlace" class="form-control bg-dark text-white border-secondary" placeholder="Ej. San Salvador" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label text-white-50">Descripción / Biografía</label>
+                <input type="text" id="Description" name="Description" class="form-control bg-dark text-white border-secondary" placeholder="Breve descripción del autor" required />
+            </div>
+
             <div class="col-md-2 d-flex align-items-end gap-2">
-                <button type="submit" id="btn-submit" class="btn btn-warning w-100 fw-bold">Guardar</button>
-                <button type="button" id="btn-cancelar" class="btn btn-outline-secondary w-100 fw-bold d-none" onclick="cancelarEdicion()">Cancelar</button>
+                <button type="submit" id="btn-submit-autor" class="btn btn-warning w-100 fw-bold">Guardar</button>
+                <button type="button" id="btn-cancelar-autor" class="btn btn-outline-secondary w-100 fw-bold d-none" onclick="cancelarEdicionAutor()">Cancelar</button>
             </div>
         </form>
     </div>
 
-    <!-- Tabla de Autores -->
     <div class="card p-4" style="background-color: #1c2541; border: none;">
         <h4 class="mb-3 text-white">Listado de Autores</h4>
         <div class="table-responsive">
@@ -42,6 +55,7 @@
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Nacionalidad</th>
+                        <th>Lugar Nac.</th>
                         <th>Nacimiento</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -54,7 +68,8 @@
                             <td>@autor.Id</td>
                             <td>@autor.Name</td>
                             <td>@autor.Nationality</td>
-                            <td>@autor.BirthDate.ToString("yyyy-MM-dd")</td>
+                            <td>@autor.BirthPlace</td>
+                            <td>@autor.BirthDate</td>
                             <td>
                                 @if (autor.Status == AuthorStatus.Active)
                                 {
@@ -67,11 +82,11 @@
                             </td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-outline-warning me-1"
-                                        onclick="cargarParaEditar('@autor.Id', '@autor.Name', '@autor.Nationality', '@autor.BirthDate.ToString("yyyy-MM-dd")')">
+                                        onclick="cargarParaEditarAutor('@autor.Id', '@autor.Name', '@autor.Nationality', '@autor.BirthDate', '@autor.BirthPlace', '@autor.Description')">
                                     Modificar
                                 </button>
 
-                                <form asp-action="CambiarEstadoAutor" method="post" style="display:inline;">
+                                <form asp-action="Delete" method="post" style="display:inline;" onsubmit="confirmarAccionForm(event, this, '¿Cambiar estado?', '¿Estás seguro de modificar el estado de este autor?')">
                                     <input type="hidden" name="id" value="@autor.Id" />
                                     <button type="submit" class="btn btn-sm @(autor.Status == AuthorStatus.Active ? "btn-outline-danger" : "btn-outline-success")">
                                         @(autor.Status == AuthorStatus.Active ? "Desactivar" : "Activar")
@@ -86,47 +101,50 @@
     </div>
 
     <div class="mt-3">
-        <a asp-action="Index" class="btn btn-secondary">Volver al Panel</a>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-secondary">Volver al Panel</a>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        function cargarParaEditar(id, name, nationality, birthDate) {
+        function cargarParaEditarAutor(id, name, nationality, birthDate, birthPlace, description) {
             const form = document.getElementById('autor-form');
-            form.action = '@Url.Action("EditarAutor", "Admin")';
+            form.action = '@Url.Action("Edit", "Autor")/' + id;
 
             document.getElementById('AutorId').value = id;
             document.getElementById('Name').value = name;
             document.getElementById('Nationality').value = nationality;
+            document.getElementById('BirthPlace').value = birthPlace || '';
+            document.getElementById('Description').value = description || '';
 
-            let fechaLimpia = birthDate.split('T')[0];
+            // Limpia la fecha para que el input type="date" la reconozca perfectamente (YYYY-MM-DD)
+            let fechaLimpia = birthDate ? birthDate.split('T')[0] : '';
             document.getElementById('BirthDate').value = fechaLimpia;
 
-            document.getElementById('form-titulo').innerText = "Modificar Autor (ID: " + id + ")";
-            const btnSubmit = document.getElementById('btn-submit');
+            document.getElementById('form-titulo-autor').innerText = "Modificar Autor (ID: " + id + ")";
+            const btnSubmit = document.getElementById('btn-submit-autor');
             btnSubmit.innerText = "Actualizar";
             btnSubmit.classList.remove('btn-warning');
             btnSubmit.classList.add('btn-success');
 
-            document.getElementById('btn-cancelar').classList.remove('d-none');
+            document.getElementById('btn-cancelar-autor').classList.remove('d-none');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function cancelarEdicion() {
+        function cancelarEdicionAutor() {
             const form = document.getElementById('autor-form');
-            form.action = '@Url.Action("CrearAutor", "Admin")';
+            form.action = '@Url.Action("Create", "Autor")';
 
             document.getElementById('AutorId').value = "0";
             form.reset();
 
-            document.getElementById('form-titulo').innerText = "Registrar Nuevo Autor";
-            const btnSubmit = document.getElementById('btn-submit');
+            document.getElementById('form-titulo-autor').innerText = "Registrar Nuevo Autor";
+            const btnSubmit = document.getElementById('btn-submit-autor');
             btnSubmit.innerText = "Guardar";
             btnSubmit.classList.remove('btn-success');
             btnSubmit.classList.add('btn-warning');
 
-            document.getElementById('btn-cancelar').classList.add('d-none');
+            document.getElementById('btn-cancelar-autor').classList.add('d-none');
         }
     </script>
 }
